@@ -1,0 +1,46 @@
+body {
+    background-color: black;
+    color: white;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: large;
+  }
+  
+  header {
+    text-align: center;
+    padding: 30px;
+    font-size: larger;
+    text-decoration: underline;
+  }
+  
+  .container {
+    background-image: url('https://pbs.twimg.com/media/FPZZbqQakAIc8S1.jpg:large');
+    background-size: contain;
+    background-position: left;
+    background-repeat: no-repeat;
+    text-align: right;
+    font-size: small;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .content {
+    max-width: 900px;
+    margin: auto auto;
+  }
+  
+  footer {
+    background-color: #000000;
+    color: white;
+    text-align: center;
+    padding: 10px;
+  
+  }
+  h2  {
+    text-align: center;
+  }
+  p{
+    font-size: small;
+  }
+  h3{
+    font-size: medium;
+  }
+ 
