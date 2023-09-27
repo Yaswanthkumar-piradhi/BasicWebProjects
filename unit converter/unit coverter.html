@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temperature Converter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Temperature Converter</h1>
+<form>
+  <div class="converter">
+    <h2 class="converter-title">Temperature Converter</h2>
+    <label for="temperature">Temperature:</label>
+    <input type="text" id="temperature" placeholder="Enter temperature">
+    <label for="unit">Unit:</label>
+    <select id="unit">
+      <option value="celsius">Celsius</option>
+      <option value="fahrenheit">Fahrenheit</option>
+      <option value="kelvin">Kelvin</option>
+    </select>
+    <button id="convertBtn">Convert</button>
+  </div>
+  <div class="result-box">
+    <h2 class="result-title">Result</h2>
+    <p id="result"></p>
+  </div>
+</form>
+  <div id="result" class="result-box">
+    <h2>Result colour is based on the temperature</h2>
+    <p id="convertedTemperature"></p>
+  </div>
+  <footer class="footer">
+    <p>&copy; 2023 My Temperature Converter. All rights reserved.</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
