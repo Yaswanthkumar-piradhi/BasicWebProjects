@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bubbles App</title>
+  <style>
+    body {
+      position: relative;
+    }
+
+    canvas {
+      border: 2px solid black;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #reset-button {
+      position: absolute;
+      bottom: -30px;
+      left: 90%;
+      transform: translateX(-50%);
+    }
+
+    #canvas-container {
+      position: relative;
+      margin-bottom: 50px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bubbles App</h1>
+  <canvas id="myCanvas" width="1510" height="600"></canvas>
+  <button id="reset-button">Reset</button>
+
+  <script>
+    var resetButton = document.getElementById("reset-button");
+    resetButton.addEventListener("click", function() {
+      location.reload();
+    });
+
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+
+    var circles = [
+      { x: 100, y: 50, r: 40, color: "yellow", outlineColor: "black", hit: false },
+      { x: 100, y: 200, r: 40, color: "blue", outlineColor: "black", hit: false },
+      { x: 100, y: 350, r: 40, color: "red", outlineColor: "black", hit: false },
+      { x: 100, y: 500, r: 40, color: "green", outlineColor: "black", hit: false }
+    ];
+
+    var arrows = [
+      { startX: canvas.width - 100, startY: 50, targetX: null, targetY: null, hit: false },
+      { startX: canvas.width - 100, startY: 200, targetX: null, targetY: null, hit: false },
+      { startX: canvas.width - 100, startY: 350, targetX: null, targetY: null, hit: false },
+      { startX: canvas.width - 100, startY: 500, targetX: null, targetY: null, hit: false }
+    ];
+
+    function drawCircle(circle) {
+      context.beginPath();
+      context.arc(circle.x, circle.y, circle.r, 0, 2 * Math.PI);
+      context.fillStyle = circle.color;
+      context.fill();
+      context.strokeStyle = circle.outlineColor;
+      context.lineWidth = 2;
+      context.stroke();
+      context.closePath();
+    }
+
+    function drawArrow(arrow, isActive) {
+      context.font = "bold 120px Arial";  // Set the font style and size
+      context.fillStyle = "black";
+
+      if (arrow.hit) {
+        context.fillText("←", arrow.targetX - 80, arrow.targetY + 20);
+      } else {
+        var endX = isActive ? arrow.startX - arrowLength - 20 : arrow.startX - arrowLength;
+        context.fillText("←", endX, arrow.startY + 20);
+      }
+    }
+
+    function clearCanvas() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function redraw() {
+      clearCanvas();
+
+      circles.forEach(function(circle) {
+        if (circle.hit) {
+          circle.color = "gray";
+        }
+        drawCircle(circle);
+      });
+
+      arrows.forEach(function(arrow, index) {
+        var isActive = index === activeIndex;
+        drawArrow(arrow, isActive);
+      });
+    }
+
+    function animateArrow() {
+      arrows.forEach(function(arrow, arrowIndex) {
+        if (arrow.targetY !== null && arrow.targetX !== null && !arrow.hit) {
+          var dx = arrow.targetX - arrow.startX;
+          var dy = arrow.targetY - arrow.startY;
+          var distance = Math.sqrt(dx * dx + dy * dy);
+          var speed = arrowSpeed / distance;  // Calculate speed based on distance
+
+          arrow.startX += dx * speed;
+          arrow.startY += dy * speed;
+
+          if (distance < arrowSpeed) {
+            arrow.startX = arrow.targetX;
+            arrow.startY = arrow.targetY;
+            arrow.hit = true;
+
+            circles.forEach(function(circle, circleIndex) {
+              if (circleIndex === activeIndex) {
+                circle.color = "gray";
+              }
+            });
+          }
+        }
+      });
+
+      redraw();
+
+      if (!arrows.every(function(arrow) { return arrow.hit; })) {
+        requestAnimationFrame(animateArrow);
+      }
+    }
+
+  function calculateTargetCoordinates(circle) {
+  var radius = circle.r;
+  var angle = Math.atan2(circle.y - arrows[activeIndex].startY, circle.x - arrows[activeIndex].startX);
+  var targetX = circle.x - (radius + arrowLength) * Math.cos(angle);
+  var targetY = circle.y - (radius + arrowLength) * Math.sin(angle);
+  return { x: targetX, y: targetY };
+}
+
+
+  var arrowLength = 76;
+  var activeIndex = -100;
+  var arrowSpeed = 100;  // Adjust the speed here
+
+  window.addEventListener("resize", function() {
+    var rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    redraw();
+  });
+
+  canvas.addEventListener("click", function(event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+
+    circles.forEach(function(circle, index) {
+      if (Math.sqrt(Math.pow(x - circle.x, 2) + Math.pow(y - circle.y, 2)) <= circle.r) {
+        activeIndex = index;
+        var target = calculateTargetCoordinates(circle);
+        arrows[index].targetX = target.x;
+        arrows[index].targetY = target.y;
+        arrows[index].hit = false;
+        circle.hit = false;
+      }
+    });
+
+    if (activeIndex !== -1) {
+      animateArrow();
+    }
+  });
+
+  redraw();
+</script>
+</body>
+</html>
+
